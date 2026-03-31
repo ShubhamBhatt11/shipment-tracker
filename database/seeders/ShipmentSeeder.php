@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Shipment;
 use App\Models\StatusLog;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ShipmentSeeder extends Seeder
 {
@@ -14,37 +14,57 @@ class ShipmentSeeder extends Seeder
      */
     public function run(): void
     {
-        Shipment::factory(50)->create()->each(function ($shipment) {
-            // Build a log progression that reflects the shipment's actual status.
-            // Pending    → [Pending]
-            // In Transit → [Pending, In Transit]  (possibly extra In Transit hops)
-            // Delivered  → [Pending, In Transit, Delivered]
+        $cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Seattle', 'Austin', 'Boston'];
+        $firstNames = ['Alex', 'Jordan', 'Taylor', 'Sam', 'Chris', 'Morgan', 'Casey', 'Avery'];
+        $lastNames = ['Smith', 'Johnson', 'Lee', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore'];
+        $streets = ['Main St', 'Oak Ave', 'Maple Rd', 'Pine St', 'Cedar Ln', 'Lakeview Dr'];
+        $statuses = ['Pending', 'In Transit', 'Delivered'];
+
+        for ($i = 1; $i <= 50; $i++) {
+            $status = $statuses[array_rand($statuses)];
+            $destinationCity = $cities[array_rand($cities)];
+            $createdAt = now()->subDays(rand(1, 45))->subHours(rand(0, 23));
+
+            $shipment = Shipment::query()->create([
+                'tracking_number' => sprintf('TRK-%05d-%s', $i, Str::upper(Str::random(3))),
+                'sender_name' => $this->randomFullName($firstNames, $lastNames),
+                'sender_address' => sprintf('%d %s', rand(100, 9999), $streets[array_rand($streets)]),
+                'receiver_name' => $this->randomFullName($firstNames, $lastNames),
+                'receiver_address' => sprintf('%d %s', rand(100, 9999), $streets[array_rand($streets)]),
+                'destination_city' => $destinationCity,
+                'status' => $status,
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ]);
+
             $steps = match ($shipment->status) {
                 'In Transit' => ['Pending', 'In Transit'],
-                'Delivered'  => ['Pending', 'In Transit', 'Delivered'],
-                default      => ['Pending'],   // Pending
+                'Delivered' => ['Pending', 'In Transit', 'Delivered'],
+                default => ['Pending'],
             };
 
-            // For In Transit / Delivered, optionally insert an extra
-            // "In Transit" hop between the first In Transit and Delivered.
             if ($shipment->status === 'Delivered' && rand(0, 1)) {
                 array_splice($steps, 2, 0, ['In Transit']);
             }
 
             $time = $shipment->created_at->copy();
 
-            foreach ($steps as $status) {
-                StatusLog::create([
+            foreach ($steps as $stepStatus) {
+                StatusLog::query()->create([
                     'shipment_id' => $shipment->id,
-                    'status'      => $status,
-                    'location'    => fake()->city(),
-                    'created_at'  => $time,
-                    'updated_at'  => $time,
+                    'status' => $stepStatus,
+                    'location' => $cities[array_rand($cities)],
+                    'created_at' => $time,
+                    'updated_at' => $time,
                 ]);
 
-                // Advance time by a realistic interval for each leg
                 $time = $time->copy()->addHours(rand(4, 36));
             }
-        });
+        }
+    }
+
+    private function randomFullName(array $firstNames, array $lastNames): string
+    {
+        return $firstNames[array_rand($firstNames)] . ' ' . $lastNames[array_rand($lastNames)];
     }
 }

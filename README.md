@@ -1,461 +1,63 @@
 # 📦 Shipment Tracker
 
-A modern web application built with **PHP 8.2+** and **Laravel 12** for tracking shipments in real-time. This application provides comprehensive shipment management with status tracking, timeline visualization, and search functionality.
+A simple Laravel 12 shipment tracking app that lets users browse shipments, search by tracking number, and view a shipment's status timeline.
 
-## ✨ Features
+## Tech Stack
 
-✅ **Shipment List Display** - View all shipments with pagination and search capabilities
-✅ **Search Functionality** - Find shipments by tracking number
-✅ **Detailed Shipment Information** - Sender and receiver details with addresses
-✅ **Status Timeline** - Visual timeline of shipment status updates with timestamps
-✅ **Responsive Design** - Built with Bootstrap 5 for optimal mobile experience
-✅ **Server-Side Rendering** - Blade templating for fast page loads
-✅ **Database Integration** - MySQL with Eloquent ORM for data management
+- PHP 8.2+
+- Laravel 12
+- MySQL
+- Blade + Bootstrap 5
 
-## 🛠 Technology Stack
+## Main Features
 
-- **Framework**: Laravel 12.x
-- **PHP Version**: 8.2+
-- **Database**: MySQL 5.7+
-- **Frontend**: Blade Templating, Bootstrap 5.3
-- **Build Tool**: Vite
-- **Testing**: Pest PHP
+- Shipment list with pagination
+- Search by tracking number
+- Shipment detail page
+- Status timeline with timestamps and locations
+- Seeded demo data for local review
 
-## 📋 Requirements
+## Routes
 
-Before you begin, ensure you have the following installed:
+- `/` — welcome page
+- `/shipments` — shipment list
+- `/shipments/{shipment}` — shipment details and timeline
 
-- **PHP** 8.2 or higher
-- **Composer** (PHP package manager)
-- **MySQL** 5.7+ or **MariaDB**
-- **Node.js** 16+ (for frontend assets)
-- **npm** or **yarn**
+## Quick Setup
 
----
+### Requirements
 
-## 🚀 Quick Start (2 minutes)
-
-### Step 1: Navigate to Project
-```bash
-cd C:\xampp\htdocs\shipment-tracker
-```
-
-### Step 2: Install Dependencies
-```bash
-composer install
-npm install
-```
-
-### Step 3: Generate Application Key
-```bash
-php artisan key:generate
-```
-
-### Step 4: Create Database
-```bash
-mysql -u root -p
-CREATE DATABASE shipment_tracker;
-EXIT;
-```
-
-### Step 5: Run Migrations and Seeds
-```bash
-php artisan migrate --force
-php artisan db:seed
-```
-
-### Step 6: Start the Application
-```bash
-php artisan serve
-```
-
-### Step 7: Open in Browser
-- **List**: http://localhost:8000/shipments
-- **Details**: http://localhost:8000/shipments/1
-
----
-
-## 📚 Detailed Installation
-
-### Step 1: Clone the Repository
+- PHP 8.2+
+- Composer
+- MySQL
 
 ```bash
-git clone https://github.com/yourusername/shipment-tracker.git
+git clone <repository-url>
 cd shipment-tracker
-```
-
-### Step 2: Install PHP Dependencies
-
-```bash
 composer install
 ```
 
-### Step 3: Install Node Dependencies
+Create `.env` from `.env.example` and update the database settings if needed.
 
-```bash
-npm install
-```
+By default, the project expects a MySQL database named `shipment_tracker`.
 
-### Step 4: Configure Environment
-
-Copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
-Generate application key:
+Then run:
 
 ```bash
 php artisan key:generate
-```
-
-### Step 5: Configure Database
-
-Edit the `.env` file and update your database credentials:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=shipment_tracker
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-Create the database:
-
-```bash
-mysql -u root -p
-CREATE DATABASE shipment_tracker;
-EXIT;
-```
-
-### Step 6: Run Migrations and Seeders
-
-```bash
-php artisan migrate
-php artisan db:seed
-```
-
-This will:
-- Create all necessary database tables
-- Seed 50 sample shipments with random status logs
-- Create sample user accounts
-
-### Step 7: Build Frontend Assets
-
-For production:
-```bash
-npm run build
-```
-
-For development with hot reload:
-```bash
-npm run dev
-```
-
----
-
-## 🏃 Running the Application
-
-### Using PHP Built-in Server
-
-```bash
+php artisan migrate --seed
 php artisan serve
 ```
 
-The application will be available at: `http://localhost:8000`
+Open:
 
-### Using XAMPP or Local Server
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/shipments`
 
-Place the project in your `htdocs` folder and access via:
-- `http://localhost/shipment-tracker/public`
+## Notes
 
----
-
-## 💡 Usage
-
-### Shipment List (`/shipments`)
-
-- View all shipments in a paginated table (10 per page)
-- Search shipments by tracking number
-- Click "View" to see full details
-- Displays: Tracking Number, Receiver Name, Destination City, Status, Date
-- Status badges with color coding (Pending: Gray, In Transit: Yellow, Delivered: Green)
-
-### Shipment Details (`/shipments/{id}`)
-
-Shows:
-- **Sender Information**: Name and address
-- **Receiver Information**: Name and address
-- **Destination City**: Final delivery location
-- **Status**: Current shipment status (Pending, In Transit, Delivered)
-- **Status Timeline**: Complete history with timestamps and locations
-- Visual timeline with color-coded status indicators
-
----
-
-## 🗄 Database Schema
-
-### shipments Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | BigInt | Primary Key |
-| tracking_number | String (255) | Unique tracking code |
-| sender_name | String (255) | Sender's name |
-| sender_address | String (255) | Sender's address |
-| receiver_name | String (255) | Receiver's name |
-| receiver_address | String (255) | Receiver's address |
-| destination_city | String (255) | Delivery city |
-| status | Enum | Pending / In Transit / Delivered |
-| created_at | Timestamp | Shipment creation date |
-| updated_at | Timestamp | Last update date |
-
-### status_logs Table
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | BigInt | Primary Key |
-| shipment_id | BigInt | Foreign Key to shipments |
-| status | Enum | Pending / In Transit / Delivered |
-| location | String (255) | Current location |
-| created_at | Timestamp | Status update timestamp |
-| updated_at | Timestamp | Last update |
-
----
-
-## 📁 Project Structure
-
-```
-shipment-tracker/
-├── app/
-│   ├── Http/
-│   │   └── Controllers/
-│   │       └── ShipmentController.php      # Main controller logic
-│   └── Models/
-│       ├── Shipment.php                    # Shipment model
-│       ├── StatusLog.php                   # Status log model
-│       └── User.php
-├── database/
-│   ├── factories/
-│   │   ├── ShipmentFactory.php
-│   │   └── StatusLogFactory.php
-│   ├── migrations/
-│   │   ├── 2026_03_31_063731_create_shipments_table.php
-│   │   └── 2026_03_31_063735_create_status_logs_table.php
-│   └── seeders/
-│       ├── DatabaseSeeder.php
-│       └── ShipmentSeeder.php
-├── resources/
-│   ├── views/
-│   │   ├── layouts/
-│   │   │   └── app.blade.php               # Main layout
-│   │   └── shipments/
-│   │       ├── index.blade.php             # List page
-│   │       └── show.blade.php              # Details page
-│   └── css/
-├── routes/
-│   └── web.php                             # Route definitions
-├── .env                                    # Environment config
-├── composer.json                           # PHP dependencies
-├── package.json                            # Node dependencies
-└── vite.config.js                          # Vite configuration
-```
-
----
-
-## 🔌 API Routes
-
-| Method | Route | Controller | Description |
-|--------|-------|-----------|-------------|
-| GET | `/shipments` | ShipmentController@index | List all shipments with pagination |
-| GET | `/shipments/{id}` | ShipmentController@show | Show shipment details with timeline |
-
----
-
-## 💻 Key Implementation Details
-
-### ShipmentController.php
-
-**Index Method** - Lists shipments with pagination and search:
-```php
-public function index(Request $request)
-{
-    $shipments = Shipment::query()
-        ->when($request->search, fn($q, $s) =>
-            $q->where('tracking_number', 'like', "%$s%"))
-        ->latest()
-        ->paginate(10)
-        ->withQueryString();
-    
-    return view('shipments.index', compact('shipments'));
-}
-```
-
-**Show Method** - Displays shipment with status timeline:
-```php
-public function show($id)
-{
-    $shipment = Shipment::with(['statusLogs' => fn($q) =>
-        $q->orderBy('created_at')])->findOrFail($id);
-    
-    return view('shipments.show', compact('shipment'));
-}
-```
-
-### Shipment Model
-
-```php
-class Shipment extends Model
-{
-    use HasFactory;
-
-    protected $fillable = [
-        'tracking_number', 'sender_name', 'sender_address',
-        'receiver_name', 'receiver_address', 'destination_city', 'status'
-    ];
-
-    public function statusLogs()
-    {
-        return $this->hasMany(StatusLog::class);
-    }
-}
-```
-
----
-
-## ✅ Features Implemented
-
-### Page 1: Shipment List (`/shipments`)
-- ✅ Display list of all shipments
-- ✅ Show: Tracking Number, Receiver Name, Destination City, Status, Date
-- ✅ Pagination (10 per page)
-- ✅ Search by tracking number
-- ✅ Status badges with color coding
-- ✅ View details link for each shipment
-
-### Page 2: Shipment Details (`/shipments/{id}`)
-- ✅ Full shipment details (sender & receiver info)
-- ✅ Complete address information
-- ✅ Destination city display
-- ✅ Status timeline with visual indicators
-- ✅ Timestamps for each status update
-- ✅ Current location in timeline
-
-### Database
-- ✅ `shipments` table with all required fields
-- ✅ `status_logs` table with shipment tracking
-- ✅ Proper foreign key relationships
-- ✅ Timestamps on all records
-
-### Bonus Features
-- ✅ Server-Side Rendering with Blade
-- ✅ Responsive Bootstrap 5 design
-- ✅ Timeline visualization with color-coded status
-- ✅ Search and filter capabilities
-- ✅ Seed data (50 shipments with 1-4 status logs each)
-
----
-
-## 🧪 Testing
-
-### Run Tests
-
-```bash
-php artisan test
-```
-
-### Test Data
-
-The seeder creates:
-- 50 sample shipments
-- 1-4 status logs per shipment
-- Realistic tracking numbers (TRK-####-???)
-- Random sender/receiver information
-
-### Check Database
-
-```bash
-php artisan tinker
-App\Models\Shipment::count();   // Should show 50
-App\Models\StatusLog::count();  // Should show ~150-200
-```
-
----
-
-## 🔧 Troubleshooting
-
-### Database Connection Error: "SQLSTATE[HY000] [1045] Access denied"
-
-**Solution**: Update `.env` with correct MySQL credentials
-```env
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-### Error: "No query results found"
-
-**Solution**: Make sure to run seeders
-```bash
-php artisan db:seed
-```
-
-### Assets Not Loading
-
-**Solution**: Build frontend assets
-```bash
-npm run build
-```
-
-### Page Not Found on /shipments
-
-**Solution**: Make sure you're accessing the correct URL
-- If using `php artisan serve`: `http://localhost:8000/shipments`
-- If using XAMPP: `http://localhost/shipment-tracker/public/shipments`
-
-### Port Already in Use
-
-**Solution**: Run on a different port
-```bash
-php artisan serve --port=8001
-```
-
----
-
-## 📊 Database Performance Notes
-
-- **Pagination**: 10 items per page for optimal loading
-- **Search**: Indexed on `tracking_number` for fast queries
-- **Status Logs**: Ordered by creation date for accurate timeline
-- **N+1 Prevention**: Uses eager loading with `with(['statusLogs'])`
-
----
-
-## 🐙 GitHub Repository
-
-Ready to push to GitHub! This project includes:
-- Complete Laravel 12 application
-- All migrations and seeders
-- Sample database with 50 shipments
-- Responsive UI with Bootstrap 5
-- Comprehensive documentation
-
----
-
-## 📝 License
-
-This project is open-source software licensed under the [MIT license](LICENSE).
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit pull requests.
-
----
-
-**Last Updated**: March 31, 2026
-**Status**: ✅ Production Ready
+- The project is not tied to XAMPP or any specific local path.
+- If using Apache or Nginx, point the web root to `public/`.
+- The seed creates 50 sample shipments with related status logs.
+- Node/Vite is available in the project, but it is not required for the current reviewer setup path above.
 

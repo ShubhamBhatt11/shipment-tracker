@@ -2,16 +2,30 @@
 
 @section('content')
 
+    <style>
+        @media (max-width: 576px) {
+            .search-form {
+                flex-wrap: wrap;
+            }
+            .search-form input {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .search-form button {
+                width: 100%;
+            }
+        }
+    </style>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0 fw-semibold">All Shipments</h4>
-        <form method="GET" action="{{ route('shipments.index') }}" class="d-flex gap-2">
+        <form method="GET" action="{{ route('shipments.index') }}" class="d-flex gap-2 search-form">
             <input
                 type="text"
                 name="search"
                 class="form-control form-control-sm"
                 placeholder="Search tracking number..."
                 value="{{ request('search') }}"
-                style="width: 240px;"
             >
             <button type="submit" class="btn btn-sm btn-dark">Search</button>
             @if(request('search'))
